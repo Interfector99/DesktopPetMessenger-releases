@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Email confirmed · DesktopPetMessenger</title>
+<meta name="description" content="Your DesktopPetMessenger email is confirmed. Go back to the app.">
+<meta name="robots" content="noindex">
+<style>
+  :root { --bg: #fff4dc; --panel: #fffdf6; --ink: #1b1f3b; --text: #1b1f3b; --muted: #6f6680; --primary: #4a68e0; --accent: #d9396b; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #1b1f3b; --panel: #262b4f; --ink: #0d1026; --text: #f3eedf; --muted: #c4bcd4; --primary: #9fb3ff; --accent: #ff8fb8; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 520px; margin: 0 auto; padding: 48px 16px; text-align: center; }
+  .card { background: var(--panel); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); padding: 24px 22px; margin: 18px 0; }
+  .big { font-size: 3rem; line-height: 1; margin-bottom: 8px; }
+  h1 { font-size: 1.6rem; margin: 0 0 8px; }
+  p { margin: 8px 0; }
+  .muted { color: var(--muted); font-size: .92rem; }
+  .error h1 { color: var(--accent); }
+  [hidden] { display: none; }
+</style>
+</head>
+<body>
+<main>
+  <div class="card" id="ok">
+    <div class="big">🐾✅</div>
+    <h1>Your email is confirmed</h1>
+    <p>Go back to <strong>DesktopPetMessenger</strong>: it logs you in by itself in a moment.</p>
+    <p class="muted">If it doesn't, tap <strong>I've tapped the link</strong> there. You can close this page.</p>
+  </div>
+  <div class="card error" id="error" hidden>
+    <div class="big">🐾⏰</div>
+    <h1>This link didn't work</h1>
+    <p id="why">It may be old or already used.</p>
+    <p>In the app, tap <strong>Send the email again</strong> and use the newest email's link.</p>
+    <p class="muted">Already confirmed? Then just log in in the app.</p>
+  </div>
+</main>
+<script>
+  // Supabase sends errors (an expired or used link) in the address; nothing is sent anywhere from here.
+  const params = new URLSearchParams(location.hash.slice(1) + '&' + location.search.slice(1));
+  const error = params.get('error_description') || params.get('error');
+  if (error) {
+    document.getElementById('ok').hidden = true;
+    document.getElementById('error').hidden = false;
+    document.getElementById('why').textContent = error.replace(/\+/g, ' ') + '.';
+  }
+  // Login details Supabase may put in the address aren't needed here: drop them from the address bar
+  // and the browser history.
+  history.replaceState(null, '', location.pathname);
+</script>
+</body>
+</html>
